@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Order extends JpaAuditable<User> {
+public class Order extends JpaAuditable<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,6 @@
 package com.lh.warehouse_management_system.user.service.impl;
 
 import com.lh.warehouse_management_system.auth.dto.RegisterRequest;
-import com.lh.warehouse_management_system.auth.service.AuthenticationService;
 import com.lh.warehouse_management_system.common.exception.DatabaseEntityNotFoundException;
 import com.lh.warehouse_management_system.common.mapper.ModelMapper;
 import com.lh.warehouse_management_system.user.dto.UserResponseDTO;
