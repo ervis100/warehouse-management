@@ -9,6 +9,9 @@ import com.lh.warehouse_management_system.inventory.dto.ItemUpdateDto;
 import com.lh.warehouse_management_system.inventory.repository.ItemRepository;
 import com.lh.warehouse_management_system.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +55,13 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public void deleteItem(Long id) {
         itemRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<ItemResponseDto> getItemsPage(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Item> itemPage = itemRepository.findAll(pageable);
+        return itemPage.<ItemResponseDto>map(ModelMapper::itemToResponseDto);
     }
 
 }

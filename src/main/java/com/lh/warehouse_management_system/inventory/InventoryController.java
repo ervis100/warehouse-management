@@ -5,13 +5,12 @@ import com.lh.warehouse_management_system.inventory.dto.ItemResponseDto;
 import com.lh.warehouse_management_system.inventory.dto.ItemUpdateDto;
 import com.lh.warehouse_management_system.inventory.service.InventoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.persistence.PostRemove;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.PostExchange;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
@@ -38,8 +37,18 @@ public class InventoryController {
                 .build();
     }
 
+    @GetMapping("/items/page")
+    public ResponseEntity<Page<ItemResponseDto>> getItemsPage(
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        Page<ItemResponseDto> items = inventoryService.getItemsPage(pageNo, pageSize);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
     @GetMapping("/items")
-    public ResponseEntity<List<ItemResponseDto>> getItems() {
+    public ResponseEntity<List<ItemResponseDto>> getItems(
+    ) {
         return new ResponseEntity<>(inventoryService.getItems(), HttpStatus.OK);
     }
 
