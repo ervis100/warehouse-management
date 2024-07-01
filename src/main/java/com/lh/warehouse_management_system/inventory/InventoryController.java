@@ -5,6 +5,7 @@ import com.lh.warehouse_management_system.inventory.dto.ItemResponseDto;
 import com.lh.warehouse_management_system.inventory.dto.ItemUpdateDto;
 import com.lh.warehouse_management_system.inventory.service.InventoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.persistence.PostRemove;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    @PostExchange("/items")
+    @PostMapping("/items")
     public ResponseEntity<?> createItem(@RequestBody @Valid ItemCreateDto itemCreateDto) {
         ItemResponseDto item = inventoryService.createItem(itemCreateDto);
 
