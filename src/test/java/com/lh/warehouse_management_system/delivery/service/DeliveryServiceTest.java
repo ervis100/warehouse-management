@@ -1,13 +1,5 @@
 package com.lh.warehouse_management_system.delivery.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.*;
-
 import com.lh.warehouse_management_system.common.exception.DatabaseEntityNotFoundException;
 import com.lh.warehouse_management_system.delivery.Delivery;
 import com.lh.warehouse_management_system.delivery.dto.DeliveryRequest;
@@ -29,27 +21,35 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class DeliveryServiceTest {
 
-    @Mock
-    private TruckRepository truckRepository;
-
-    @Mock
-    private DeliveryRepository deliveryRepository;
-
-    @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
-    private ItemRepository itemRepository;
-
-    @InjectMocks
-    private DeliveryServiceImpl deliveryService;
-
-    private DeliveryRequest deliveryRequest;
     Item item1;
     Item item2;
+    @Mock
+    private TruckRepository truckRepository;
+    @Mock
+    private DeliveryRepository deliveryRepository;
+    @Mock
+    private OrderRepository orderRepository;
+    @Mock
+    private ItemRepository itemRepository;
+    @InjectMocks
+    private DeliveryServiceImpl deliveryService;
+    private DeliveryRequest deliveryRequest;
+    private DeliveryRequest deliveryRequestTruckNotFound;
 
     @BeforeEach
     void setUp() {
@@ -122,10 +122,14 @@ public class DeliveryServiceTest {
 
     @Test
     void testScheduleDeliveryWithNonExistentTruck() {
-        when(truckRepository.findById(1L)).thenReturn(Optional.empty());
+        deliveryRequestTruckNotFound = new DeliveryRequest();
+        deliveryRequestTruckNotFound.setDeliveryDate(LocalDate.of(2024, 7, 3));
+        when(truckRepository.findById(3L)).thenReturn(Optional.empty());
+
+        deliveryRequestTruckNotFound.setTrucks(Set.of(3L));
 
         assertThrows(DatabaseEntityNotFoundException.class, () -> {
-            deliveryService.scheduleDelivery(deliveryRequest);
+            deliveryService.scheduleDelivery(deliveryRequestTruckNotFound);
         });
     }
 
@@ -174,13 +178,13 @@ public class DeliveryServiceTest {
         Order order1 = new Order();
         order1.setId(1L);
         order1.setStatus(OrderStatus.APPROVED);
-        OrderItem orderItem1 = new OrderItem(order1,item1,20);
+        OrderItem orderItem1 = new OrderItem(order1, item1, 20);
         order1.setItems(List.of(orderItem1));
 
         Order order2 = new Order();
         order2.setId(2L);
         order2.setStatus(OrderStatus.APPROVED);
-        OrderItem orderItem2 = new OrderItem(order2,item2,20);
+        OrderItem orderItem2 = new OrderItem(order2, item2, 20);
         order2.setItems(List.of(orderItem2));
 
         when(truckRepository.findById(1L)).thenReturn(Optional.of(truck1));

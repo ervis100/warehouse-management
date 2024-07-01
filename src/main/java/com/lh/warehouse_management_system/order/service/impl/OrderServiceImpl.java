@@ -17,8 +17,10 @@ import com.lh.warehouse_management_system.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -79,6 +81,13 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrder(Long id, OrderUpdateDto orderUpdateDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new DatabaseEntityNotFoundException("Order"));
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!order.getCreatedBy().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+
         if (!order.getStatus().equals(OrderStatus.CREATED) && !order.getStatus().equals(OrderStatus.DECLINED)) {
             throw new InvalidOrderStatusException(order.getStatus());
         }

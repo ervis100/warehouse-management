@@ -25,6 +25,8 @@ public class TuckServiceImpl implements TruckService {
 
     @Override
     public TruckResponseDTO createTruck(TruckCreateDTO truckCreateDTO) {
+        truckCreateDTO.setLicensePlate(truckCreateDTO.getLicensePlate().toUpperCase());
+        truckCreateDTO.setChassisNumber(truckCreateDTO.getChassisNumber().toUpperCase());
 
         List<Truck> existingTruck = truckRepository.findByChassisNumberOrLicensePlate(truckCreateDTO.getChassisNumber(), truckCreateDTO.getLicensePlate());
         if (!existingTruck.isEmpty()) {
@@ -36,9 +38,10 @@ public class TuckServiceImpl implements TruckService {
     }
 
     @Override
-    public Truck getTruckById(Long id) {
-        return truckRepository.findById(id)
+    public TruckResponseDTO getTruckById(Long id) {
+        Truck truck = truckRepository.findById(id)
                 .orElseThrow(() -> new DatabaseEntityNotFoundException("Truck"));
+        return ModelMapper.truckToResponseDto(truck);
     }
 
     @Override
@@ -48,6 +51,8 @@ public class TuckServiceImpl implements TruckService {
 
     @Override
     public void updateTruck(Long id, TruckUpdateDTO truckUpdateDTO) {
+        truckUpdateDTO.setLicensePlate(truckUpdateDTO.getLicensePlate().toUpperCase());
+        truckUpdateDTO.setChassisNumber(truckUpdateDTO.getChassisNumber().toUpperCase());
 
         Truck truckToUpdate = truckRepository.findById(id)
                 .orElseThrow(() -> new DatabaseEntityNotFoundException("Truck"));

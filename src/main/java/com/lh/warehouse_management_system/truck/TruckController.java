@@ -42,7 +42,7 @@ public class TruckController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Truck> getTruckById(@PathVariable Long id) {
+    public ResponseEntity<TruckResponseDTO> getTruckById(@PathVariable Long id) {
         return new ResponseEntity<>(truckService.getTruckById(id), HttpStatus.OK);
     }
 
