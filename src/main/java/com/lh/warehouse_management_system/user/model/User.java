@@ -52,6 +52,8 @@ public class User implements UserDetails {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
     }
 
+    private Boolean deleted = false;
+
     @Override
     public String getPassword() {
         return password;

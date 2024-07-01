@@ -7,6 +7,7 @@ import com.lh.warehouse_management_system.user.model.Role;
 import com.lh.warehouse_management_system.user.model.User;
 import com.lh.warehouse_management_system.user.repository.RoleRepository;
 import com.lh.warehouse_management_system.user.repository.UserRepository;
+import com.lh.warehouse_management_system.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +51,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public CommandLineRunner init(RoleRepository repository, UserRepository userRepository, AuthenticationService authenticationService) {
+    public CommandLineRunner init(RoleRepository repository, UserService userService, UserRepository userRepository, AuthenticationService authenticationService) {
         return args -> {
             if (repository.count() == 0) {
                 List<Role> roles = List.of(
@@ -61,33 +62,33 @@ public class ApplicationConfig {
             }
 
             if (userRepository.count() == 0) {
-                authenticationService.register(
+                userService.createUser(
                         RegisterRequest.builder()
                                 .firstname("client")
                                 .lastname("lh")
                                 .email("client@gmail.com")
                                 .username("clientUser")
-                                .password("password")
+                                .password("123456789")
                                 .role(1L)
                                 .build());
 
-                authenticationService.register(
+                userService.createUser(
                         RegisterRequest.builder()
                                 .firstname("manager")
                                 .lastname("lh")
                                 .email("manager@gmail.com")
                                 .username("managerUser")
-                                .password("password")
+                                .password("123456789")
                                 .role(2L)
                                 .build());
 
-                authenticationService.register(
+                userService.createUser(
                         RegisterRequest.builder()
                                 .firstname("system")
                                 .lastname("admin")
                                 .email("system.admin@gmail.com")
                                 .username("systemAdmin")
-                                .password("password")
+                                .password("123456789")
                                 .role(3L)
                                 .build());
             }

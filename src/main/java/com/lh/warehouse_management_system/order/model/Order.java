@@ -2,6 +2,7 @@ package com.lh.warehouse_management_system.order.model;
 
 import com.lh.warehouse_management_system.common.model.JpaAuditable;
 import com.lh.warehouse_management_system.delivery.Delivery;
+import com.lh.warehouse_management_system.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Order extends JpaAuditable<Long> {
+public class Order extends JpaAuditable<User> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

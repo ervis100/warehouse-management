@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .deleted(false)
                 .roles(List.of(role))
                 .build();
         return userRepository.save(user);
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDTO> getUsers() {
-        return userRepository.findAll().stream().map(ModelMapper::userToResponseDto).collect(Collectors.toList());
+        return userRepository.findAllByDeletedFalse().stream().map(ModelMapper::userToResponseDto).collect(Collectors.toList());
     }
 
     @Override
@@ -72,6 +73,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new DatabaseEntityNotFoundException("User"));
+
+        user.setDeleted(true);
+        userRepository.save(user);
     }
 }

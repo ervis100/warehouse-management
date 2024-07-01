@@ -1,12 +1,14 @@
 package com.lh.warehouse_management_system.auth.service.imlp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lh.warehouse_management_system.auth.LogoutService;
 import com.lh.warehouse_management_system.auth.dto.AuthenticationRequest;
 import com.lh.warehouse_management_system.auth.dto.AuthenticationResponse;
 import com.lh.warehouse_management_system.auth.dto.PasswordChangeRequest;
 import com.lh.warehouse_management_system.auth.dto.RegisterRequest;
 import com.lh.warehouse_management_system.auth.exception.InvalidCredentialsException;
 import com.lh.warehouse_management_system.auth.exception.NewPasswordDontMatchException;
+import com.lh.warehouse_management_system.auth.exception.SamePasswordChangeException;
 import com.lh.warehouse_management_system.auth.service.AuthenticationService;
 import com.lh.warehouse_management_system.common.exception.DatabaseEntityNotFoundException;
 import com.lh.warehouse_management_system.common.mapper.ModelMapper;
@@ -38,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final LogoutService logoutService;
 
     public AuthenticationResponse register(RegisterRequest request) {
         User user = userService.createUser(request);
@@ -133,7 +136,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new NewPasswordDontMatchException();
         }
 
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new SamePasswordChangeException();
+        }
+
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        /*
+            TODO
+            logoutService.logout();
+         */
         userRepository.save(user);
     }
 }

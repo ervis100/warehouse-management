@@ -188,8 +188,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailedResponseDTO getOrderDetails(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new DatabaseEntityNotFoundException("Order"));
-        Optional<User> createdBy = userRepository.findById(order.getCreatedBy());
-        Optional<User> updatedBy = userRepository.findById(order.getUpdatedBy());
+        Optional<User> createdBy = userRepository.findById(order.getCreatedBy().getId());
+        Optional<User> updatedBy = userRepository.findById(order.getUpdatedBy().getId());
         return ModelMapper.orderToDetailedDTO(order, createdBy, updatedBy);
     }
 

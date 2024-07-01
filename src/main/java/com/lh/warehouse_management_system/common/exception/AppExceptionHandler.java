@@ -2,6 +2,7 @@ package com.lh.warehouse_management_system.common.exception;
 
 import com.lh.warehouse_management_system.auth.exception.InvalidCredentialsException;
 import com.lh.warehouse_management_system.auth.exception.NewPasswordDontMatchException;
+import com.lh.warehouse_management_system.auth.exception.SamePasswordChangeException;
 import com.lh.warehouse_management_system.delivery.exception.DeliveryDayException;
 import com.lh.warehouse_management_system.delivery.exception.MaximumDeliveryCapacityExceeded;
 import com.lh.warehouse_management_system.order.exception.InsufficientItemsException;
@@ -168,6 +169,17 @@ public class AppExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidDeadlineException.class)
     public ExceptionResponse handle(InvalidDeadlineException exception, HttpServletRequest request) {
+        log.error(exception.getMessage());
+        return ExceptionResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .path(request.getRequestURI().substring(request.getContextPath().length()))
+                .errors(List.of(ExceptionDetails.builder().message(StringUtils.capitalize(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())).code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()).detail(exception.getMessage()).build()))
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SamePasswordChangeException.class)
+    public ExceptionResponse handle(SamePasswordChangeException exception, HttpServletRequest request) {
         log.error(exception.getMessage());
         return ExceptionResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.getReasonPhrase())

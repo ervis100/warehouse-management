@@ -3,6 +3,7 @@ package com.lh.warehouse_management_system.auth.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class RegisterRequest {
     private String email;
 
     @NotEmpty
+    @Size(min = 6, max = 20)
     private String password;
 
     @NotNull
